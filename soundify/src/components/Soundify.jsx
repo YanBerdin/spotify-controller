@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProvider } from "../utils/Provider";
 import styled from "styled-components";
 import { reducerCases } from "../utils/Constants";

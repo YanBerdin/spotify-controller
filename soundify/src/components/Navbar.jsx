@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { useProvider } from "../utils/Provider";
 import { FaSearch } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import PropTypes from "prop-types";
 import { reducerCases } from "../utils/Constants";
+import { useProvider } from "../utils/Provider";
 
 function Navbar({ $navBackground }) {
-  const [{ userInfo }] = useProvider();
+  const [{ userInfo }, dispatch] = useProvider();
   // console.log(userInfo); //TODO Remove this line
   console.log("Rendering => Navbar"); //TODO Remove this line
 
@@ -82,8 +82,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
-    
-  } a {
+     a {
        display: flex;
        justify-content: center;
        align-items: center;
@@ -92,7 +91,9 @@ const Container = styled.div`
        color: var(--color-icon-default);
        font-weight: bold;
        /*transition: color 0.3s ease-in-out;*/
-       
+    } &:hover {
+       border-color: #646cff;
+        }
        
     } svg {
           font-size: 1.3rem;
@@ -109,7 +110,7 @@ const Container = styled.div`
         }
     }
   }
-  .avatar {
+
       button {
         position: absolute; 
         top: 100%; 
