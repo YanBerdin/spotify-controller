@@ -1,35 +1,49 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { useProvider } from "./utils/Provider";
+import { reducerCases } from "./utils/Constants";
+import Login from "./components/Login";
+import Soundify from "./components/Soundify";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [{ token }, dispatch] = useProvider();
+  // console.log(token);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  useEffect(() => {
+    // Vérifier si un token est stocké dans sessionStorage au démarrage de l'application
+    const storedToken = window.sessionStorage.getItem("token");
+
+    // Si un token est trouvé et qu'il n'est pas déjà dans le state => MAJ du state
+    if (storedToken && !token) {
+      dispatch({ type: reducerCases.SET_TOKEN, token: storedToken });
+    }
+
+    // Écouter les changements dans l'URL qui peuvent indiquer un nouveau token
+    const hash = window.location.hash;
+    if (hash) {
+      const tokenMatch = hash.match(/access_token=([^&]*)/);
+
+      if (tokenMatch) {
+        const newToken = tokenMatch[1];
+        window.sessionStorage.setItem("token", newToken);
+
+        // Nettoyer le hash de l'URL
+        window.location.hash = "";
+        dispatch({ type: reducerCases.SET_TOKEN, token: newToken });
+
+        //  console.log(newToken);
+        //  console.log(token);
+      }
+    }
+
+    //  console.log(token);
+  }, [dispatch, token]);
+
+  return !token ? (
+    <Login />
+  ) : (
+    <div>
+      <Soundify />
+    </div>
+  );
 }
-
-export default App
