@@ -80,7 +80,7 @@ const Container = styled.div`
      padding: 0.5em 1em;
      font-size: 1em;
      font-weight: 500;
-     font-family: inherit;
+ 
      border-radius: 2rem;
      border: 1px solid transparent;
      display: flex;
@@ -100,20 +100,22 @@ const Container = styled.div`
       gap: 0.5rem;
       text-decoration: none;
       color: var(--color-icon-default);
-      font-weight: bold;
+      /*font-weight: bold;*/
+      font-size: 1rem;
        &:focus,
        &:focus-visible {
          outline: 4px auto -webkit-focus-ring-color;
        }
         &:hover {
           border-color: #646cff;
+          transform: none;
             svg {
-             font-size: 1.3rem;
+             /*font-size: 1.3rem;*/
              background-color: #282828;
              padding: 0.2rem;
              border-radius: 1rem;
              color: var(--color-icon-default);
-             flex-shrink: 0;
+             
             }
              &:hover {
                color: var(--color-icon-hover);
@@ -136,14 +138,17 @@ const Container = styled.div`
           background-color: black;
           opacity: 1;
           transition-delay: 0s;
-          border-radius: 2rem;        }
+          border-radius: 2rem;
+          }
       }
     }
-    .avatar a svg {
-  width: 24px; /* Ajustez cette valeur en fonction de vos besoins */
-  height: 24px; /* Ajustez cette valeur en fonction de vos besoins */
-}
-
+     .avatar a svg {
+      width: 24px; /* Ajustez cette valeur en fonction de vos besoins */
+      height: 24px; /* Ajustez cette valeur en fonction de vos besoins */
+     }
+    /* .avatar a:hover {
+  font-size: inherit;
+  transform: none; 
 } 
 `;
 

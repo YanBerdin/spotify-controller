@@ -202,12 +202,12 @@ const Container = styled.div`
   .state {
     svg {
       color: white;
+      font-size: 2rem;
     }
   }
   .previous,
-  .next,
-  .state {
-    font-size: 2rem;
+  .next, {
+    font-size: 1.3rem;
   }
 `;
 
