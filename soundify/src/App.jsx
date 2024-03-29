@@ -5,7 +5,7 @@ import Login from "./components/Login";
 import Soundify from "./components/Soundify";
 import "./App.css";
 
-export default function App() {
+ function App() {
   const [{ token }, dispatch] = useProvider();
   // console.log(token);
 
@@ -47,3 +47,4 @@ export default function App() {
     </div>
   );
 }
+export default App;

@@ -26,7 +26,7 @@ function Navbar({ $navBackground }) {
         <input type="text" placeholder="Artists, songs, or podcasts" />
       </div>
       <div className="avatar">
-        <a href={userInfo?.userUrl}>
+        <a href={userInfo?.userUrl} target="_blank">
           <CgProfile />
           <span>{userInfo?.name}</span>
         </a>
@@ -73,44 +73,54 @@ const Container = styled.div`
       }
     }
   }
-  .avatar {
-    background-color: black;
-    padding: 0.3rem 1rem 0.4rem 0.3rem;
-    /*padding-right: 1rem;*/
-    border-radius: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-     a {
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       gap: 0.5rem;
-       text-decoration: none;
-       color: var(--color-icon-default);
-       font-weight: bold;
-       /*transition: color 0.3s ease-in-out;*/
-    } &:hover {
-       border-color: #646cff;
-        }
-       
-    } svg {
-          font-size: 1.3rem;
-          background-color: #282828;
-          padding: 0.2rem;
-          border-radius: 1rem;
-          color: var(--color-icon-default);
-          /*transition: color 0.3s ease-in-out;*/
-        }
-        &:hover {
-        color: var(--color-icon-hover);
-        } svg {
-          color: var(--color-icon-hover);
-        }
-    }
+    .avatar {
+     background-color: black;
+     /*padding: 0.3rem 1rem 0.4rem 0.3rem;
+     padding-right: 1rem;*/
+     padding: 0.5em 1em;
+     font-size: 1em;
+     font-weight: 500;
+     font-family: inherit;
+     border-radius: 2rem;
+     border: 1px solid transparent;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     position: relative;
+     width: 130px;
+     cursor: pointer;
+     transition: border-color 0.25s;
+     &:hover {
+    border-color: #646cff;
   }
-
+      a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--color-icon-default);
+      font-weight: bold;
+       &:focus,
+       &:focus-visible {
+         outline: 4px auto -webkit-focus-ring-color;
+       }
+        &:hover {
+          border-color: #646cff;
+            svg {
+             font-size: 1.3rem;
+             background-color: #282828;
+             padding: 0.2rem;
+             border-radius: 1rem;
+             color: var(--color-icon-default);
+             flex-shrink: 0;
+            }
+             &:hover {
+               color: var(--color-icon-hover);
+             }
+        }
+     }
+ 
       button {
         position: absolute; 
         top: 100%; 
@@ -126,9 +136,14 @@ const Container = styled.div`
           background-color: black;
           opacity: 1;
           transition-delay: 0s;
-          border-radius: 1rem;        }
+          border-radius: 2rem;        }
       }
     }
+    .avatar a svg {
+  width: 24px; /* Ajustez cette valeur en fonction de vos besoins */
+  height: 24px; /* Ajustez cette valeur en fonction de vos besoins */
+}
+
 } 
 `;
 
