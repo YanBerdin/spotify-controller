@@ -89,7 +89,7 @@ const Container = styled.div`
      position: relative;
      width: 130px;
      cursor: pointer;
-     transition: border-color 0.25s;
+     /*transition: border-color 0.25s;*/
      &:hover {
     border-color: #646cff;
   }
@@ -125,7 +125,7 @@ const Container = styled.div`
  
       button {
         position: absolute; 
-        top: 100%; 
+        top: 110%; 
         left: 50%;
         transform: translateX(-50%); 
         display: none;

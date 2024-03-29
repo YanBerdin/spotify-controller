@@ -203,6 +203,10 @@ const Container = styled.div`
     svg {
       color: white;
       font-size: 2rem;
+      transition: 0.2s ease-in-out;
+      &:hover {
+        color: #b3b3b3;
+      }
     }
   }
   .previous,
