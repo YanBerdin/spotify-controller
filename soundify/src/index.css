@@ -3,14 +3,14 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color-scheme: light dark; /* logout & input Volume */
+  /*color: rgba(255, 255, 255, 0.87);*/
+  /*background-color: #242424;*/
 
   font-synthesis: none;
-  /*text-rendering: optimizeLegibility;*/
-  /*-webkit-font-smoothing: antialiased;*/
-  /*-moz-osx-font-smoothing: grayscale;*/
+  /*text-rendering: optimizeLegibility; /* a supprimer */
+  /*-webkit-font-smoothing: antialiased; /* a supprimer */
+  /*-moz-osx-font-smoothing: grayscale; /* a supprimer */
 }
 
 /*a {
@@ -29,6 +29,7 @@ a:hover {
   justify-content: center;
   min-height: 100vh;
   padding: 0rem;
+  box-sizing: border-box;
 }
 
 body {

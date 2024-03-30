@@ -87,6 +87,7 @@ const Container = styled.div`
       display: flex;
       flex-direction: column;
       gap: 0.3rem;
+      overflow: hidden;
       &__track__name {
         margin-bottom: 0; /* MAJ */
         color: white;
