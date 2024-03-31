@@ -8,6 +8,7 @@ export const initialState = {
   selectedPlaylistId: "29cplenOi8Aun1nEDjwqdF",
   currentPlaying: null,
   playerState: false,
+  queueList: [],
 };
 
 const reducer = (state, action) => {
@@ -47,6 +48,11 @@ const reducer = (state, action) => {
         ...state,
         playerState: action.playerState,
       };
+      case reducerCases.SET_QUEUELIST:
+        return {
+          ...state,
+          queueList: action.queueList,
+        };
 
     default:
       return state;

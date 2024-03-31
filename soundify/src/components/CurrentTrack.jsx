@@ -4,10 +4,14 @@ import axios from "axios";
 import { useProvider } from "../utils/Provider";
 import { reducerCases } from "../utils/Constants";
 
+// Informations du Track en cours de lecture
 function CurrentTrack() {
   const [{ token, currentPlaying }, dispatch] = useProvider();
+  
   console.log("Rendering => CurrentTrack"); //TODO Remove this line
+
   useEffect(() => {
+    console.log("Appel => getCurrentTrack()"); //TODO Remove this line
     // https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
     const getCurrentTrack = async () => {
       try {
@@ -23,7 +27,7 @@ function CurrentTrack() {
 
         console.log("response.data", response.data); //TODO Remove this line
         // console.log(response.data.item.name); //TODO Remove this line
-        console.log("Appel => getCurrentTrack()"); //TODO Remove this line
+        
         if (response.data !== "") {
           const currentPlaying = {
             id: response.data.item.id,
@@ -52,10 +56,9 @@ function CurrentTrack() {
       }
     };
     getCurrentTrack();
-    console.log("Appel => getCurrentTrack()"); //TODO Remove this line
+   
   }, [token, dispatch]);
 
-  
   // console.log(currentPlaying); //TODO Remove this line
   // console.log(currentPlaying?.name); //TODO Remove this line
 

@@ -1,5 +1,3 @@
-// import getPlaybackState from "./Soundify";
-
 import styled from "styled-components";
 import {
   BsFillPlayCircleFill,
@@ -14,9 +12,10 @@ import { reducerCases } from "../utils/Constants";
 // import { useEffect } from "react";
 
 function PlayerControls() {
-  const [{ token, playerState }, dispatch] = useProvider();
+  const [{ token, playerState, queueList }, dispatch] = useProvider();
   console.log("Rendering => PlayerControls"); //TODO Remove this line
   console.log("playerState", playerState); //TODO Remove this line
+console.log("queueList", queueList); //TODO Remove this line
 
   // Fonction pour changer l'état du lecteur (pause / lecture)
   const changeState = async () => {
@@ -35,7 +34,7 @@ function PlayerControls() {
         }
       );
 
-      // OK mais empty response
+      // OK => empty response
       if (response.status === 204) {
         dispatch({
           type: reducerCases.SET_PLAYER_STATE,
@@ -65,8 +64,14 @@ function PlayerControls() {
     }
   };
 
-  // Fonction pour changer de piste type = "next" ou "previous"
-  const changeTrackAndGetInfo = async (type) => {
+
+  // Récupération de l'état du lecteur
+  //const isPlaying = changeTrackResponse.data.is_playing;
+
+  //let currentIndex = -1; // Index du titre actuellement joué //TODO: a mettre  ds Constants
+
+  //* Fonction pour changer de piste type = "next" ou "previous"
+  const changeTrackFromQueue = async (type) => {
     console.log("Appel => changeTrackAndGetInfo"); //TODO Remove this line
     try {
       // Changement de piste
@@ -84,48 +89,48 @@ function PlayerControls() {
         }
       );
 
-      // console.log(
-      //   "dispatch SET_PLAYER_STATE, playerState: playerState => PAUSE"
-      // ); //TODO Remove this line
+      console.log(
+        "dispatch SET_PLAYER_STATE, playerState: playerState => PAUSE"
+      ); //TODO Remove this line
       console.log("changeTrackResponse", changeTrackResponse); //TODO Remove this line
+      console.log(type); //TODO Remove this line
 
       if (changeTrackResponse.status === 204) {
         dispatch({
           type: reducerCases.SET_PLAYER_STATE,
-          playerState: !playerState,
+          playerState: !playerState, // PAUSE
         });
 
         // Récupérer la musique en cours de lecture
-        const trackInfoResponse = await axios.get(
-          "https://api.spotify.com/v1/me/player/currently-playing",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
-        console.log("trackInfoResponse.data", trackInfoResponse.data); //TODO Remove this line
+        // const trackInfoResponse = await axios.get(
+        // "https://api.spotify.com/v1/me/player/currently-playing",
 
-        if (trackInfoResponse.data && trackInfoResponse.data.item) {
-          // Récupération de l'état du lecteur
-          const isPlaying = trackInfoResponse.data.is_playing;
-          dispatch({
-            type: reducerCases.SET_PLAYER_STATE,
-            playerState: isPlaying,
-          });
 
-          // Récupération des informations du nouveau morceau
-          const currentPlaying = {
-            id: trackInfoResponse.data.item.id,
-            name: trackInfoResponse.data.item.name,
-            artists: trackInfoResponse.data.item.artists.map(
-              (artist) => artist.name
-            ),
-            image: trackInfoResponse.data.item.album.images[2].url,
-          };
 
-          dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
+
+        // Récupération des informations du nouveau morceau
+         if (type === "next") {
+          //const nextTrackInQueue = queueList[0];
+          // currentIndex++;
+          //queueList = queue[currentIndex];
+
+
+
+          // const currentPlaying = {
+          //   id: trackInfoResponse.data.item.id,
+          //   name: trackInfoResponse.data.item.name,
+          //   artists: trackInfoResponse.data.item.artists.map(
+          //     (artist) => artist.name
+          //   ),
+          //   image: trackInfoResponse.data.item.album.images[2].url,
+          // };
+
+          // dispatch({
+          //   type: reducerCases.SET_PLAYER_STATE,
+          //   playerState: nextTrack,
+          // });
+
+          dispatch({ type: reducerCases.SET_PLAYING, nextTrack });
           console.log("playerState", playerState); //TODO Remove this line
 
           dispatch({
@@ -135,7 +140,7 @@ function PlayerControls() {
           console.log("dispatch reducerCases.SET_PLAYING, currentPlaying"); //TODO Remove this line
           // } else {
           //   dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
-             console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
+          console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
           console.log("trackInfoResponse.data", trackInfoResponse.data);
           // getPlaybackState();
 
@@ -161,6 +166,22 @@ function PlayerControls() {
         );
       }
     }
+
+    //   function playNext() {
+    //     if (currentIndex < queue.length - 1) {
+    //       currentIndex++;
+    //       playTrack(queue[currentIndex]);
+    //     }
+    //   }
+
+    //   function playPrevious() {
+    //     if (currentIndex > 0) {
+    //       currentIndex--;
+    //       playTrack(queue[currentIndex]);
+    //     } else {
+    //       console.log("Aucun titre précédent dans la file d'attente.");
+    //     }
+    //   }
   };
   return (
     <Container>
@@ -168,7 +189,7 @@ function PlayerControls() {
         <BsShuffle />
       </div>
       <div className="previous">
-        <CgPlayTrackPrev onClick={() => changeTrackAndGetInfo("previous")} />
+        <CgPlayTrackPrev onClick={() => changeTrackFromQueue("previous")} />
       </div>
       <div className="state">
         {playerState ? (
@@ -178,7 +199,7 @@ function PlayerControls() {
         )}
       </div>
       <div className="next">
-        <CgPlayTrackNext onClick={() => changeTrackAndGetInfo("next")} />
+        <CgPlayTrackNext onClick={() => changeTrackFromQueue("next")} />
       </div>
       <div className="repeat">
         <FiRepeat />
@@ -210,7 +231,7 @@ const Container = styled.div`
     }
   }
   .previous,
-  .next, {
+  .next {
     font-size: 1.3rem;
   }
 `;

@@ -31,16 +31,16 @@ function Soundify() {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const { data } = await axios.get("https://api.spotify.com/v1/me", {
+        const userInfoResponse = await axios.get("https://api.spotify.com/v1/me", {
           headers: {
             Authorization: "Bearer " + token,
             "Content-Type": "application/json",
           },
         });
         const userInfo = {
-          userId: data.id,
-          userUrl: data.external_urls.spotify,
-          name: data.display_name,
+          userId: userInfoResponse.data.id,
+          userUrl: userInfoResponse.data.external_urls.spotify,
+          name: userInfoResponse.data.display_name,
         };
         dispatch({ type: reducerCases.SET_USER, userInfo });
       } catch (error) {
@@ -55,12 +55,100 @@ function Soundify() {
       }
     };
     getUserInfo();
+    console.log("Appel => getUserInfo()"); //TODO Remove this line
   }, [dispatch, token]);
 
+  // Récupération des informations des morceaux de la file d'attente
+  useEffect(() => {
+    const getQueueList = async () => {
+      try {
+        // Récupération de la file d'attente
+        const queueResponse = await axios.get(
+          // https://developer.spotify.com/documentation/web-api/reference/get-queue
+          // Retourne un [] d'objet  currently_playing + queue
+          "https://api.spotify.com/v1/me/player/queue",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        console.log("queueResponse", queueResponse); //TODO Remove this line
+
+        // Si la requête est un succès et que la file d'attente existe
+        if (queueResponse.status === 200 && queueResponse.data.queue) {
+          const currentQueueList = queueResponse.data.queue;
+          const currently_playing = queueResponse.data.currently_playing;
+
+          console.log("currentQueueList", currentQueueList); //TODO Remove this line
+
+          // Récupération du Track actuellement dans le lecteur
+          if (currently_playing) {
+            const TrackInPlayer = {
+              id: currently_playing.id,
+              name: currently_playing.name,
+              artists: currently_playing.artists.map((artist) => artist.name),
+              image: currently_playing.album.images[2].url,
+            };
+            dispatch({
+              type: reducerCases.SET_PLAYING,
+              currentPlaying: TrackInPlayer,
+            });
+            console.log(
+              "dispatch SET_PLAYING, currentPlaying:TrackInPlayer",
+              TrackInPlayer
+            ); //TODO Remove this line
+          } 
+          // else {
+          //   dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
+          //   console.log("dispatch SET_PLAYING, currentPlaying: null"); //TODO Remove this line
+          // }
+
+          // Récupération des Tracks de la file d'attente
+          const newQueueList = currentQueueList.map((track) => {
+            return {
+              id: track.id,
+              name: track.name,
+              artists: track.artists.map((artist) => artist.name),
+              image: track.album.images[2].url,
+            };
+          });
+          console.log("newQueueList", newQueueList); //TODO Remove this line
+
+          dispatch({
+            type: reducerCases.SET_QUEUELIST,
+            queueList: newQueueList,
+          });
+          console.log("dispatch SET_QUEUELIST, queueList: newQueueList"); //TODO Remove this line
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          // Gérer l'erreur 403 ici
+          console.error("Erreur d'authentification.", error);
+        } else if (error.response && error.response.status === 401) {
+          console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
+          // Rediriger vers la page de connexion
+          window.location.href = "http://localhost:3000";
+        } else {
+          console.error(
+            "Une erreur s'est produite lors de la récupération de la file d'attente.",
+            error
+          );
+        }
+      }
+    };
+
+    getQueueList();
+    console.log("Appel => getQueueList()"); //TODO Remove this line
+  }, [dispatch, token]);
+
+  // Récupération de l'état de lecture actuel
   useEffect(() => {
     const getPlaybackState = async () => {
       try {
-        const { data } = await axios.get(
+        const playBackResponse = await axios.get(
+          // https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
           "https://api.spotify.com/v1/me/player",
           {
             headers: {
@@ -69,12 +157,15 @@ function Soundify() {
             },
           }
         );
+        console.log("playBackResponse", playBackResponse); //TODO Remove this line
         dispatch({
           type: reducerCases.SET_PLAYER_STATE,
-          playerState: data.is_playing,
+          playerState: playBackResponse.is_playing,
         });
-        console.log("dispatch SET_PLAYER_STATE, playerState: data.is_playing"); //TODO Remove this line
-        console.log("is_playing", data.is_playing); //TODO Remove this line
+        console.log(" playBackResponse",playBackResponse ); //TODO Remove this line
+        console.log("dispatch SET_PLAYER_STATE, playerState: playBackResponse.is_playing"); //TODO Remove this line
+        console.log("is_playing", playBackResponse.is_playing); //TODO Remove this line
+      
       } catch (error) {
         // Handle error here
         if (error.response && error.response.status === 401) {
@@ -99,7 +190,7 @@ function Soundify() {
         <Sidebar />
         <div className="body" ref={bodyRef} onScroll={bodyScrolled}>
           <Navbar $navBackground={$navBackground} />
-         
+
           <div className="body__contents">
             <Body headerBackground={headerBackground} />
           </div>
@@ -143,16 +234,6 @@ const Container = styled.div`
           background-color: var(--color-scrollbar-thumb);
         }
   }
-
-  /* #logout {
-    padding: 0.5rem 2rem;
-    border-radius: 3rem;
-    background-color: var(--color-button-bg);
-    color: var(--color-button-text);
-    border: none;
-    font-size: 0.8rem;
-    cursor: pointer;
-  } */
 `;
 
 export default Soundify;
