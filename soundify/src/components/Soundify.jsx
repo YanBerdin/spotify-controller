@@ -31,12 +31,15 @@ function Soundify() {
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        const userInfoResponse = await axios.get("https://api.spotify.com/v1/me", {
-          headers: {
-            Authorization: "Bearer " + token,
-            "Content-Type": "application/json",
-          },
-        });
+        const userInfoResponse = await axios.get(
+          "https://api.spotify.com/v1/me",
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const userInfo = {
           userId: userInfoResponse.data.id,
           userUrl: userInfoResponse.data.external_urls.spotify,
@@ -99,7 +102,7 @@ function Soundify() {
               "dispatch SET_PLAYING, currentPlaying:TrackInPlayer",
               TrackInPlayer
             ); //TODO Remove this line
-          } 
+          }
           // else {
           //   dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
           //   console.log("dispatch SET_PLAYING, currentPlaying: null"); //TODO Remove this line
@@ -158,14 +161,28 @@ function Soundify() {
           }
         );
         console.log("playBackResponse", playBackResponse); //TODO Remove this line
-        dispatch({
-          type: reducerCases.SET_PLAYER_STATE,
-          playerState: playBackResponse.is_playing,
-        });
-        console.log(" playBackResponse",playBackResponse ); //TODO Remove this line
-        console.log("dispatch SET_PLAYER_STATE, playerState: playBackResponse.is_playing"); //TODO Remove this line
+
+        if (playBackResponse.status === 200 && playBackResponse.data != "") {
+          // Si le statut de la réponse est 200, cela signifie que le lecteur est en pause
+          dispatch({
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: playBackResponse.data.is_playing,
+          });
+          console.log("dispatch SET_PLAYER_STATE, playerState: false"); //TODO Remove this line
+        } else if (
+          playBackResponse.status === 200 &&
+          playBackResponse.data === ""
+        ) {
+          dispatch({
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: false,
+          });
+        }
+        console.log("playBackResponse", playBackResponse); //TODO Remove this line
+        console.log(
+          "dispatch SET_PLAYER_STATE, playerState: playBackResponse.is_playing"
+        ); //TODO Remove this line
         console.log("is_playing", playBackResponse.is_playing); //TODO Remove this line
-      
       } catch (error) {
         // Handle error here
         if (error.response && error.response.status === 401) {

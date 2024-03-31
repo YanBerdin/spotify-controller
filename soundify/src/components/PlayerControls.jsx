@@ -15,7 +15,7 @@ function PlayerControls() {
   const [{ token, playerState, queueList }, dispatch] = useProvider();
   console.log("Rendering => PlayerControls"); //TODO Remove this line
   console.log("playerState", playerState); //TODO Remove this line
-console.log("queueList", queueList); //TODO Remove this line
+  console.log("queueList", queueList); //TODO Remove this line
 
   // Fonction pour changer l'état du lecteur (pause / lecture)
   const changeState = async () => {
@@ -33,6 +33,8 @@ console.log("queueList", queueList); //TODO Remove this line
           },
         }
       );
+
+      // console.log("response", response); //TODO Remove this line
 
       // OK => empty response
       if (response.status === 204) {
@@ -63,7 +65,6 @@ console.log("queueList", queueList); //TODO Remove this line
       }
     }
   };
-
 
   // Récupération de l'état du lecteur
   //const isPlaying = changeTrackResponse.data.is_playing;
@@ -105,16 +106,11 @@ console.log("queueList", queueList); //TODO Remove this line
         // const trackInfoResponse = await axios.get(
         // "https://api.spotify.com/v1/me/player/currently-playing",
 
-
-
-
         // Récupération des informations du nouveau morceau
-         if (type === "next") {
+        if (type === "next") {
           //const nextTrackInQueue = queueList[0];
           // currentIndex++;
           //queueList = queue[currentIndex];
-
-
 
           // const currentPlaying = {
           //   id: trackInfoResponse.data.item.id,
