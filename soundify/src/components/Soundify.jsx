@@ -51,7 +51,7 @@ function Soundify() {
         if (error.response && error.response.status === 401) {
           console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
           // Rediriger vers la page de connexion
-          window.location.href = "http://localhost:3000";
+          window.location.href = "http://localhost:5173";
         } else {
           console.error("Error fetching user info:", error);
         }
@@ -132,7 +132,7 @@ function Soundify() {
         } else if (error.response && error.response.status === 401) {
           console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
           // Rediriger vers la page de connexion
-          window.location.href = "http://localhost:3000";
+          window.location.href = "http://localhost:5173";
         } else {
           console.error(
             "Une erreur s'est produite lors de la récupération de la file d'attente.",
@@ -190,10 +190,10 @@ function Soundify() {
             "Token expiré. Cliquer sur Logout ou fermer l'onglet.",
             error
           );
-          // window.location.href = "http://localhost:3000"; //? Boucle infinie
+          // window.location.href = "http://localhost:5173"; //? Boucle infinie
         } else {
           console.error("Error fetching playback state:", error);
-          // window.location.href = "http://localhost:3000"; //? Boucle infinie
+          // window.location.href = "http://localhost:5173"; //? Boucle infinie
         }
       }
     };

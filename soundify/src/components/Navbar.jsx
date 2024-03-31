@@ -15,7 +15,7 @@ function Navbar({ $navBackground }) {
     dispatch({ type: reducerCases.SET_TOKEN, token: "" });
 
     // Redirect vers login page
-    window.location.href = "http://localhost:3000";
+    window.location.href = "http://localhost:5173";
   };
   // console.log(token);
 
