@@ -9,6 +9,7 @@ export const initialState = {
   currentPlaying: null,
   playerState: false,
   queueList: [],
+  currentIndex: 0,
 };
 
 const reducer = (state, action) => {
@@ -48,11 +49,16 @@ const reducer = (state, action) => {
         ...state,
         playerState: action.playerState,
       };
-      case reducerCases.SET_QUEUELIST:
-        return {
-          ...state,
-          queueList: action.queueList,
-        };
+    case reducerCases.SET_QUEUELIST:
+      return {
+        ...state,
+        queueList: action.queueList,
+      };
+    case reducerCases.SET_CURRENTINDEX:
+      return {
+        ...state,
+        currentIndex: action.currentIndex,
+      };
 
     default:
       return state;

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 import {
   BsFillPlayCircleFill,
@@ -9,15 +10,15 @@ import { FiRepeat } from "react-icons/fi";
 import { useProvider } from "../utils/Provider";
 import axios from "axios";
 import { reducerCases } from "../utils/Constants";
-// import { useEffect } from "react";
 
 function PlayerControls() {
-  const [{ token, playerState, queueList }, dispatch] = useProvider();
-  console.log("Rendering => PlayerControls"); //TODO Remove this line
-  console.log("playerState", playerState); //TODO Remove this line
-  console.log("queueList", queueList); //TODO Remove this line
+  const [{ token, playerState, currentIndex, queueList }, dispatch] =
+    useProvider();
+  // console.log("Rendering => PlayerControls"); //TODO Remove this line
+  // console.log("playerState", playerState); //TODO Remove this line
+  // console.log("queueList", queueList); //TODO Remove this line
 
-  // Fonction pour changer l'état du lecteur (pause / lecture)
+  // Changer l'état du lecteur (pause / lecture)
   const changeState = async () => {
     try {
       const state = playerState ? "pause" : "play";
@@ -42,8 +43,10 @@ function PlayerControls() {
           type: reducerCases.SET_PLAYER_STATE,
           playerState: !playerState,
         });
-        console.log("dispatch SET_PLAYER_STATE, playerState: !playerState"); //TODO Remove this line
-        console.log(playerState);
+        console.log(
+          "dispatch SET_PLAYER_STATE, playerState: !playerState",
+          playerState
+        ); //TODO Remove this line
       }
     } catch (error) {
       if (error.response && error.response.status === 403) {
@@ -66,14 +69,73 @@ function PlayerControls() {
     }
   };
 
-  // Récupération de l'état du lecteur
-  //const isPlaying = changeTrackResponse.data.is_playing;
+  // Récupération des Tracks de la file d'attente
+  const getQueueList = async () => {
+    try {
+      // Récupération de la file d'attente
+      const queueResponse = await axios.get(
+        // https://developer.spotify.com/documentation/web-api/reference/get-queue
+        // Retourne un [] d'objet  currently_playing + queue
+        "https://api.spotify.com/v1/me/player/queue",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      console.log("queueResponse", queueResponse); //TODO Remove this line
 
-  //let currentIndex = -1; // Index du titre actuellement joué //TODO: a mettre  ds Constants
+      // Si la requête est un succès et que la file d'attente existe
+      if (queueResponse.status === 200 && queueResponse.data.queue) {
+        const currentQueueList = queueResponse.data.queue;
 
-  //* Fonction pour changer de piste type = "next" ou "previous"
+        console.log("currentQueueList", currentQueueList); //TODO Remove this line
+
+        // Récupération des Tracks de la file d'attente
+        const newQueueList = currentQueueList.map((track) => {
+          return {
+            id: track.id,
+            name: track.name,
+            artists: track.artists.map((artist) => artist.name),
+            image: track.album.images[2].url,
+          };
+        });
+        //console.log("newQueueList", newQueueList); //TODO Remove this line
+        dispatch({
+          type: reducerCases.SET_QUEUELIST,
+          queueList: newQueueList,
+        });
+        console.log("dispatch SET_QUEUELIST, queueList: newQueueList"); //TODO Remove this line
+        console.log("newQueueList", newQueueList[currentIndex]); //TODO Remove this line
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        // Gérer l'erreur 403 ici
+        console.error("Erreur d'authentification.", error);
+      } else if (error.response && error.response.status === 401) {
+        console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
+        // Rediriger vers la page de connexion
+        window.location.href = "http://localhost:5173";
+      } else {
+        console.error(
+          "Une erreur s'est produite lors de la récupération de la file d'attente.",
+          error
+        );
+      }
+    }
+  };
+
+  useEffect(() => {
+    getQueueList();
+    console.log("UseEffect => getQueueList()", queueList); //TODO Remove this line
+  }, [token, dispatch]);
+
+  // Fonction pour changer de piste type = "next" ou "previous"
   const changeTrackFromQueue = async (type) => {
-    console.log("Appel => changeTrackAndGetInfo"); //TODO Remove this line
+    let newCurrentTrack = [];
+    
+    console.log("Appel => changeTrackFromQueue()"); //TODO Remove this line
     try {
       // Changement de piste
       const changeTrackResponse = await axios.post(
@@ -102,47 +164,50 @@ function PlayerControls() {
           playerState: !playerState, // PAUSE
         });
 
-        // Récupérer la musique en cours de lecture
-        // const trackInfoResponse = await axios.get(
-        // "https://api.spotify.com/v1/me/player/currently-playing",
+ 
 
-        // Récupération des informations du nouveau morceau
+        // Récupération du prochain/précédent Track
         if (type === "next") {
-          //const nextTrackInQueue = queueList[0];
-          // currentIndex++;
-          //queueList = queue[currentIndex];
+          newCurrentTrack = queueList[currentIndex];
+          console.log("newCurrentTrack", newCurrentTrack); //TODO Remove this line
 
-          // const currentPlaying = {
-          //   id: trackInfoResponse.data.item.id,
-          //   name: trackInfoResponse.data.item.name,
-          //   artists: trackInfoResponse.data.item.artists.map(
-          //     (artist) => artist.name
-          //   ),
-          //   image: trackInfoResponse.data.item.album.images[2].url,
-          // };
-
-          // dispatch({
-          //   type: reducerCases.SET_PLAYER_STATE,
-          //   playerState: nextTrack,
-          // });
-
-          dispatch({ type: reducerCases.SET_PLAYING, nextTrack });
-          console.log("playerState", playerState); //TODO Remove this line
 
           dispatch({
-            type: reducerCases.SET_PLAYER_STATE,
-            playerState: playerState,
+            type: reducerCases.SET_PLAYING,
+            currentPlaying: newCurrentTrack,
           });
-          console.log("dispatch reducerCases.SET_PLAYING, currentPlaying"); //TODO Remove this line
-          // } else {
-          //   dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
-          console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
-          console.log("trackInfoResponse.data", trackInfoResponse.data);
-          // getPlaybackState();
+          dispatch({
+            type: reducerCases.SET_CURRENTINDEX,
+            currentIndex: currentIndex + 1,
+          });
+           console.log("currentIndex", currentIndex); //TODO Remove this line
+        } else if (type === "previous") {
+          // currentIndex--;
+         // currentPreviousTrack = queueList[-1];
+         // console.log("currentPreviousTrack", currentPreviousTrack); //TODO Remove this line
 
-          console.log("playerState", playerState); //TODO Remove this line
+          // dispatch({
+          //   type: reducerCases.SET_CURRENTINDEX,
+          //   currentIndex: currentIndex - 1,
+          // });
+
+          // dispatch({
+          //   type: reducerCases.SET_PLAYING,
+          //   currentPlaying: currentPreviousTrack,
+          // });
+
+          // console.log("currentIndex", currentIndex); //TODO Remove this line
+        } else {
+          console.log("Aucun titre précédent dans la file d'attente.");
         }
       }
+
+      console.log("playerState", playerState); //TODO Remove this line
+      dispatch({
+        type: reducerCases.SET_PLAYER_STATE,
+        playerState: playerState,
+      });
+      console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
     } catch (error) {
       if (error.response && error.response.status === 403) {
         // Gérer l'erreur 403 ici
@@ -155,37 +220,28 @@ function PlayerControls() {
           error
         );
       } else {
-        // Gérer d'autres types d'erreurs ici
         console.error(
           "Une erreur s'est produite lors du changement de piste.",
           error
         );
       }
     }
-
-    //   function playNext() {
-    //     if (currentIndex < queue.length - 1) {
-    //       currentIndex++;
-    //       playTrack(queue[currentIndex]);
-    //     }
-    //   }
-
-    //   function playPrevious() {
-    //     if (currentIndex > 0) {
-    //       currentIndex--;
-    //       playTrack(queue[currentIndex]);
-    //     } else {
-    //       console.log("Aucun titre précédent dans la file d'attente.");
-    //     }
-    //   }
   };
+
+  const handleNextTrack = () => {
+
+    console.log("Appel => handleNextTrack"); //TODO Remove this line
+    changeTrackFromQueue("next");
+     console.log(currentIndex); //TODO Remove this line
+  };
+
   return (
     <Container>
       <div className="shuffle">
         <BsShuffle />
       </div>
       <div className="previous">
-        <CgPlayTrackPrev onClick={() => changeTrackFromQueue("previous")} />
+        <CgPlayTrackPrev onClick={() => handleNextTrack } />
       </div>
       <div className="state">
         {playerState ? (
