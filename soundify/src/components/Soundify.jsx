@@ -61,7 +61,6 @@ function Soundify() {
     console.log("Appel => getUserInfo()"); //TODO Remove this line
   }, [dispatch, token]);
 
- 
   // Récupération de l'état de lecture actuel
   useEffect(() => {
     const getPlaybackState = async () => {
@@ -76,7 +75,7 @@ function Soundify() {
             },
           }
         );
-        console.log("playBackResponse", playBackResponse); //TODO Remove this line
+        // console.log("playBackResponse", playBackResponse); //TODO Remove this line
 
         if (playBackResponse.status === 200 && playBackResponse.data != "") {
           // Si le statut de la réponse est 200, cela signifie que le lecteur est en pause
@@ -94,11 +93,11 @@ function Soundify() {
             playerState: false,
           });
         }
-        console.log("playBackResponse", playBackResponse); //TODO Remove this line
+        // console.log("playBackResponse", playBackResponse); //TODO Remove this line
         console.log(
           "dispatch SET_PLAYER_STATE, playerState: playBackResponse.is_playing"
         ); //TODO Remove this line
-        console.log("is_playing", playBackResponse.data.is_playing); //TODO Remove this line
+        // console.log("is_playing", playBackResponse.data.is_playing); //TODO Remove this line
       } catch (error) {
         // Handle error here
         if (error.response && error.response.status === 401) {

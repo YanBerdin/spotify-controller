@@ -9,6 +9,7 @@ export const initialState = {
   currentPlaying: null,
   playerState: false,
   queueList: [],
+  newPlayedTrackList: [],
   currentIndex: 0,
 };
 
@@ -59,7 +60,11 @@ const reducer = (state, action) => {
         ...state,
         currentIndex: action.currentIndex,
       };
-
+    case reducerCases.SET_NEW_PLAYED_TRACKLIST:
+      return {
+        ...state,
+        newPlayedTrackList: action.newPlayedTrackList,
+      };
     default:
       return state;
   }

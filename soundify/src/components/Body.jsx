@@ -12,6 +12,8 @@ function Body() {
   console.log("Rendering => Body"); //TODO Remove this line
 
   useEffect(() => {
+    console.log("useEffect => getInitialPlaylist"); //TODO Remove this line
+
     const getInitialPlaylist = async () => {
       try {
         const response = await axios.get(
@@ -23,8 +25,7 @@ function Body() {
             },
           }
         );
-        console.log(response.data); //TODO Remove this line
-        console.log("getInitialPlaylist (Body.jsx)"); //TODO Remove this line
+        // console.log(response.data); //TODO Remove this line
         const selectedPlaylist = {
           id: response.data.id,
           name: response.data.name,

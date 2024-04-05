@@ -7,15 +7,15 @@ import { reducerCases } from "../utils/Constants";
 // Informations du Track en cours de lecture
 function CurrentTrack() {
   const [{ token, currentPlaying }, dispatch] = useProvider();
-  
+
   console.log("Rendering => CurrentTrack"); //TODO Remove this line
 
   useEffect(() => {
-    console.log("Appel => getCurrentTrack()"); //TODO Remove this line
+    console.log("useEffect => getCurrentTrack()"); //TODO Remove this line
     // https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
     const getCurrentTrack = async () => {
       try {
-        const response = await axios.get(
+        const currentTrackResponse = await axios.get(
           "https://api.spotify.com/v1/me/player/currently-playing",
           {
             headers: {
@@ -25,15 +25,17 @@ function CurrentTrack() {
           }
         );
 
-        console.log("response.data", response.data); //TODO Remove this line
-        // console.log(response.data.item.name); //TODO Remove this line
-        
-        if (response.data !== "") {
+        // console.log("currentTrackResponse.data", currentTrackResponse.data); //TODO Remove this line
+        // console.log(currentTrackResponse.data.item.name); //TODO Remove this line
+
+        if (currentTrackResponse.data !== "") {
           const currentPlaying = {
-            id: response.data.item.id,
-            name: response.data.item.name,
-            artists: response.data.item.artists.map((artist) => artist.name),
-            image: response.data.item.album.images[2].url,
+            id: currentTrackResponse.data.item.id,
+            name: currentTrackResponse.data.item.name,
+            artists: currentTrackResponse.data.item.artists.map(
+              (artist) => artist.name
+            ),
+            image: currentTrackResponse.data.item.album.images[2].url,
           };
           dispatch({
             type: reducerCases.SET_PLAYING,
@@ -45,18 +47,23 @@ function CurrentTrack() {
           console.log("dispatch SET_PLAYING, currentPlaying: null"); //TODO Remove this line
         }
       } catch (error) {
-        if (error.response.status === 401) {
+        if (error.currentTrackResponse.status === 401) {
           // console.log("Token expiré. Cliquer sur Logout ou fermer l'onglet."); //TODO Remove this line
-          console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.", error);
+          console.error(
+            "Token expiré. Cliquer sur Logout ou fermer l'onglet.",
+            error
+          );
           // window.location.href = "http://localhost:5173";
         } else {
-          console.error("Une erreur est survenue, Cliquer sur Logout ou fermer l'onglet.", error);
+          console.error(
+            "Une erreur est survenue, Cliquer sur Logout ou fermer l'onglet.",
+            error
+          );
           // Handle other errors here
         }
       }
     };
     getCurrentTrack();
-   
   }, [token, dispatch]);
 
   // console.log(currentPlaying); //TODO Remove this line

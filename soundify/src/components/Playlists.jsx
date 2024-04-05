@@ -32,7 +32,7 @@ function Playlists() {
 
         // Récupérer un tableau d'objets items
         const { items } = response.data;
-        console.log(items); //TODO Remove this line
+        // console.log(items); //TODO Remove this line
 
         //? Pour accéder au nom de la première playlist
         // const playlistName = items[0].name;
@@ -54,10 +54,16 @@ function Playlists() {
         setLoading(false); // Mise à jour de l'état de chargement
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.", error);
+          console.error(
+            "Token expiré. Cliquer sur Logout ou fermer l'onglet.",
+            error
+          );
           // window.location.href = "http://localhost:5173";
         } else {
-          console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.", error);
+          console.error(
+            "Token expiré. Cliquer sur Logout ou fermer l'onglet.",
+            error
+          );
         }
         // Mise à jour de l'état de chargement même en cas d'erreur
         setLoading(false);
