@@ -266,8 +266,8 @@ function PlayerControls() {
           console.log("currentIndex", currentIndex); //TODO Remove this line
         }
         if (type === "previous") {
-          previousTrack = newPlayedTrackList[0];
-          console.log("previousTrack", previousTrack); //TODO Remove this line
+          //  previousTrack = newPlayedTrackList[0];
+          //  console.log("previousTrack", previousTrack); //TODO Remove this line
 
           dispatch({
             type: reducerCases.SET_CURRENTINDEX,
@@ -275,12 +275,42 @@ function PlayerControls() {
           });
           console.log("currentIndex", currentIndex); //TODO Remove this line
 
-          dispatch({
-            type: reducerCases.SET_PLAYING,
-            currentPlaying: previousTrack,
-          });
+          // dispatch({
+          //   type: reducerCases.SET_PLAYING,
+          //   currentPlaying: previousTrack,
+          // });
+
+          // Ajout d'un délai pour laisser le temps au lecteur de changer de morceau
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Délai de 1000ms
+
+          // Récupération des informations du nouveau morceau
+          const trackInfoResponse = await axios.get(
+            "https://api.spotify.com/v1/me/player/currently-playing",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+            }
+          );
+          if (trackInfoResponse.data && trackInfoResponse.data.item) {
+            const currentPlaying = {
+              id: trackInfoResponse.data.item.id,
+              name: trackInfoResponse.data.item.name,
+              artists: trackInfoResponse.data.item.artists.map(
+                (artist) => artist.name
+              ),
+              image: trackInfoResponse.data.item.album.images[2].url,
+            };
+            dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
+          }
         }
-        console.log("playerState", playerState); //TODO Remove this line
+        // console.log("playerState", playerState); //TODO Remove this line
+        dispatch({
+          type: reducerCases.SET_PLAYER_STATE,
+          playerState: playerState,
+        });
+        console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
       }
     } catch (error) {
       if (error.response && error.response.status === 403) {
@@ -296,11 +326,6 @@ function PlayerControls() {
         );
       }
     }
-    dispatch({
-      type: reducerCases.SET_PLAYER_STATE,
-      playerState: playerState,
-    });
-    console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
   };
 
   const handleNextTrack = () => {
