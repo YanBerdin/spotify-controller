@@ -13,7 +13,7 @@ import { reducerCases } from "../utils/Constants";
 
 function PlayerControls() {
   const [
-    { token, playerState, currentIndex, queueList, newPlayedTrackList },
+    { token, playerState, currentIndex, queueList, newPlayedTrackList }, //* remove currentIndex
     dispatch,
   ] = useProvider();
   // console.log("Rendering => PlayerControls"); //TODO Remove this line
@@ -23,6 +23,7 @@ function PlayerControls() {
   // Changer l'état du lecteur (pause / lecture)
   const changeState = async () => {
     try {
+      console.log("Appel => changeState");
       const state = playerState ? "pause" : "play";
       const changeStateResponse = await axios.put(
         // https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
@@ -218,8 +219,8 @@ function PlayerControls() {
 
   // Fonction pour changer de piste type = "next" ou "previous"
   const changeTrackFromQueue = async (type) => {
-    let newCurrentTrack = {};
-    let previousTrack = {};
+    // let newCurrentTrack = {};
+    // let previousTrack = {};
 
     console.log("Appel => changeTrackFromQueue()"); //TODO Remove this line
     try {
@@ -245,32 +246,63 @@ function PlayerControls() {
       console.log(type); //TODO Remove this line
 
       if (changeTrackResponse.status === 204) {
-        dispatch({
-          type: reducerCases.SET_PLAYER_STATE,
-          playerState: !playerState, // PAUSE
-        });
+        // dispatch({
+        //   type: reducerCases.SET_PLAYER_STATE,
+        //   playerState: !playerState, // PAUSE
+        // });
 
         // Récupération du prochain/précédent Track
         if (type === "next") {
-          newCurrentTrack = queueList[currentIndex];
-          console.log("newCurrentTrack", newCurrentTrack); //TODO Remove this line
+          // Ajout d'un délai pour laisser le temps au lecteur de changer de morceau
+          await new Promise((resolve) => setTimeout(resolve, 1000)); // Délai de 1000ms
 
+          // Récupération des informations du nouveau morceau
+          const trackInfoResponse = await axios.get(
+            "https://api.spotify.com/v1/me/player/currently-playing",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+            }
+          );
+          if (trackInfoResponse.data && trackInfoResponse.data.item) {
+            const currentPlaying = {
+              id: trackInfoResponse.data.item.id,
+              name: trackInfoResponse.data.item.name,
+              artists: trackInfoResponse.data.item.artists.map(
+                (artist) => artist.name
+              ),
+              image: trackInfoResponse.data.item.album.images[2].url,
+            };
+            dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
+          }
+
+          // console.log("playerState", playerState); //TODO Remove this line
           dispatch({
-            type: reducerCases.SET_PLAYING,
-            currentPlaying: newCurrentTrack,
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: playerState,
           });
-          dispatch({
-            type: reducerCases.SET_CURRENTINDEX,
-            currentIndex: currentIndex + 1,
-          });
-          console.log("currentIndex", currentIndex); //TODO Remove this line
+          console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
+          // newCurrentTrack = queueList[currentIndex];
+          // console.log("newCurrentTrack", newCurrentTrack); //TODO Remove this line
+
+          // dispatch({
+          //   type: reducerCases.SET_PLAYING,
+          //   currentPlaying: newCurrentTrack,
+          // });
+          // dispatch({
+          //   type: reducerCases.SET_CURRENTINDEX,  //! ---------------------------------------------------
+          //   currentIndex: currentIndex + 1,
+          // });
+          // console.log("currentIndex", currentIndex); //TODO Remove this line
         }
         if (type === "previous") {
           //  previousTrack = newPlayedTrackList[0];
           //  console.log("previousTrack", previousTrack); //TODO Remove this line
 
           dispatch({
-            type: reducerCases.SET_CURRENTINDEX,
+            type: reducerCases.SET_CURRENTINDEX, //! ---------------------------------------------------
             currentIndex: currentIndex - 1,
           });
           console.log("currentIndex", currentIndex); //TODO Remove this line
