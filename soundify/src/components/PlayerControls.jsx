@@ -21,11 +21,11 @@ function PlayerControls() {
   // console.log("queueList", queueList); //TODO Remove this line
 
   // Changer l'état du lecteur (pause / lecture)
-  const changeState = async () => {
+  const playOrPause = async () => {
     try {
-      console.log("Appel => changeState");
+      console.log("Appel => playOrPause");
       const state = playerState ? "pause" : "play";
-      const changeStateResponse = await axios.put(
+      const playOrPauseResponse = await axios.put(
         // https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
         // https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
         `https://api.spotify.com/v1/me/player/${state}`,
@@ -38,10 +38,10 @@ function PlayerControls() {
         }
       );
 
-      // console.log("changeStateResponse", changeStateResponse); //TODO Remove this line
+      // console.log("playOrPauseResponse", playOrPauseResponse); //TODO Remove this line
 
-      // OK => empty changeStateResponse
-      if (changeStateResponse.status === 204) {
+      // OK => empty playOrPauseResponse
+      if (playOrPauseResponse.status === 204) {
         dispatch({
           type: reducerCases.SET_PLAYER_STATE,
           playerState: !playerState,
@@ -53,8 +53,8 @@ function PlayerControls() {
       }
     } catch (error) {
       if (
-        error.changeStateResponse &&
-        error.changeStateResponse.status === 403
+        error.playOrPauseResponse &&
+        error.playOrPauseResponse.status === 403
       ) {
         // Gérer l'erreur 403 ici
         console.error(
@@ -382,9 +382,9 @@ function PlayerControls() {
       </div>
       <div className="state">
         {playerState ? (
-          <BsFillPauseCircleFill onClick={changeState} />
+          <BsFillPauseCircleFill onClick={playOrPause} />
         ) : (
-          <BsFillPlayCircleFill onClick={changeState} />
+          <BsFillPlayCircleFill onClick={playOrPause} />
         )}
       </div>
       <div className="next">
