@@ -16,7 +16,7 @@ function PlayerControls() {
     { token, playerState, currentIndex, queueList, newPlayedTrackList }, //* remove currentIndex
     dispatch,
   ] = useProvider();
-  // console.log("Rendering => PlayerControls"); //TODO Remove this line
+  console.log("Rendering => PlayerControls"); //TODO Remove this line
   // console.log("playerState", playerState); //TODO Remove this line
   // console.log("queueList", queueList); //TODO Remove this line
 
@@ -221,7 +221,6 @@ function PlayerControls() {
   const changeTrackFromQueue = async (type) => {
     // let newCurrentTrack = {};
     // let previousTrack = {};
-
     console.log("Appel => changeTrackFromQueue()"); //TODO Remove this line
     try {
       // Changement de piste
@@ -243,9 +242,9 @@ function PlayerControls() {
       console.log(type); //TODO Remove this line
 
       if (changeTrackResponse.status === 204) {
-        // Récupération du prochain/précédent Track
+        // Récupération des infos du next/previous track
         if (type === "next") {
-          // Ajout d'un délai pour laisser le temps au lecteur de changer de morceau
+          // Ajout d'un délai pour laisser le temps au lecteur de changer de track
           await new Promise((resolve) => setTimeout(resolve, 1000)); // Délai de 1000ms
 
           // Récupération des informations du nouveau morceau
@@ -269,13 +268,16 @@ function PlayerControls() {
             };
             dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
           }
-
-          // console.log("playerState", playerState); //TODO Remove this line
           dispatch({
             type: reducerCases.SET_PLAYER_STATE,
-            playerState: playerState,
+            playerState: trackInfoResponse.data.is_playing,
           });
-          console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
+          console.log("playerState", playerState); //TODO Remove this line
+
+          console.log(
+            "dispatch SET_PLAYER_STATE, playerState: playerState",
+            playerState
+          ); //TODO Remove this line
           // newCurrentTrack = queueList[currentIndex];
           // console.log("newCurrentTrack", newCurrentTrack); //TODO Remove this line
 
@@ -328,13 +330,15 @@ function PlayerControls() {
             };
             dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
           }
+          dispatch({
+            type: reducerCases.SET_PLAYER_STATE,
+            playerState: trackInfoResponse.data.is_playing,
+          });
+          console.log(
+            "dispatch SET_PLAYER_STATE, playerState: !playerState",
+            playerState
+          ); //TODO Remove this line
         }
-
-        dispatch({
-          type: reducerCases.SET_PLAYER_STATE,
-          playerState: !playerState,
-        });
-        console.log("dispatch SET_PLAYER_STATE, playerState: !playerState"); //TODO Remove this line
       }
     } catch (error) {
       if (error.response && error.response.status === 403) {
