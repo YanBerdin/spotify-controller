@@ -239,18 +239,10 @@ function PlayerControls() {
         }
       );
 
-      console.log(
-        "dispatch SET_PLAYER_STATE, playerState: playerState => PAUSE"
-      ); //TODO Remove this line
       // console.log("changeTrackResponse", changeTrackResponse); //TODO Remove this line
       console.log(type); //TODO Remove this line
 
       if (changeTrackResponse.status === 204) {
-        // dispatch({
-        //   type: reducerCases.SET_PLAYER_STATE,
-        //   playerState: !playerState, // PAUSE
-        // });
-
         // Récupération du prochain/précédent Track
         if (type === "next") {
           // Ajout d'un délai pour laisser le temps au lecteur de changer de morceau
@@ -301,11 +293,11 @@ function PlayerControls() {
           //  previousTrack = newPlayedTrackList[0];
           //  console.log("previousTrack", previousTrack); //TODO Remove this line
 
-          dispatch({
-            type: reducerCases.SET_CURRENTINDEX, //! ---------------------------------------------------
-            currentIndex: currentIndex - 1,
-          });
-          console.log("currentIndex", currentIndex); //TODO Remove this line
+          //  dispatch({
+          //    type: reducerCases.SET_CURRENTINDEX, //! ---------------------------------------------------
+          //    currentIndex: currentIndex - 1,
+          //  });
+          //  console.log("currentIndex", currentIndex); //TODO Remove this line
 
           // dispatch({
           //   type: reducerCases.SET_PLAYING,
@@ -337,12 +329,12 @@ function PlayerControls() {
             dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
           }
         }
-        // console.log("playerState", playerState); //TODO Remove this line
+
         dispatch({
           type: reducerCases.SET_PLAYER_STATE,
-          playerState: playerState,
+          playerState: !playerState,
         });
-        console.log("dispatch SET_PLAYER_STATE, playerState: playerState"); //TODO Remove this line
+        console.log("dispatch SET_PLAYER_STATE, playerState: !playerState"); //TODO Remove this line
       }
     } catch (error) {
       if (error.response && error.response.status === 403) {
