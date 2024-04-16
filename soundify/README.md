@@ -1,8 +1,29 @@
-# React + Vite
+# Soundify : Spotify Controller
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## `🛠 Under construction 🏗`
 
-Currently, two official plugins are available:
+- Minimal setup to get React working in Vite
+- Discovery and Learning of styled-components
+- Warning: The use of all Spotify features requires a Premium account
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Create an Application
+
+First, we need to create a Spotify App to give us credentials to authenticate with the API.
+
+- Go to your Spotify Developer Dashboard and log in.
+- Click Create an App.
+- Fill out the name and description and click create.
+- Click Show Client Secret.
+- Save your Client ID and Secret.
+- Click Edit Settings.
+- Add <http://localhost:5173> as a redirect URI.
+
+All done! You now have a properly configured Spotify application and the correct credentials to make requests.
+
+## Running Locally
+
+```bash
+cd soundify
+npm install
+npm run dev
+```
