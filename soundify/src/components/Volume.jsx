@@ -45,7 +45,7 @@ const Container = styled.div`
   align-content: center;
    gap: 1rem;
   input {
-    width: 15rem;
+    width: 9rem;
     height: 0.3rem;
     border-radius: 2rem;
     color: #1ed760;

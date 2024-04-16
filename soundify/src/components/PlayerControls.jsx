@@ -75,7 +75,7 @@ function PlayerControls() {
     }
   };
 
-  // Récupération des Tracks de la file d'attente
+  //! Récupération des Tracks de la file d'attente
   const getQueueList = async () => {
     console.log("Appel => getQueueList()"); //TODO Remove this line
     try {
@@ -139,7 +139,7 @@ function PlayerControls() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, dispatch]);
 
-  // Récupération de la liste des Tracks récemment joués
+  //! Récupération de la liste des Tracks récemment joués
   const getrecentlyPlayedList = async () => {
     console.log("Appel => getrecentlyPlayedList()"); //TODO Remove this line
     try {
@@ -352,6 +352,7 @@ function PlayerControls() {
           "Une erreur s'est produite lors du changement de piste.",
           error
         );
+        dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
       }
     }
   };

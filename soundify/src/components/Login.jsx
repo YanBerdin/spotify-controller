@@ -16,6 +16,7 @@ const RESPONSE_TYPE = "token";
 
 function Login() {
   console.log("Rendering => Login"); //TODO Remove this line
+  
   const handleClick = async () => {
     window.location.href = `${api_uri}?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope.join(
       " "
@@ -27,7 +28,7 @@ function Login() {
       <img
         src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_CMYK_Black.png"
         alt="spotify-logo"
-        width="100%"
+        width="50%"
       />
       <button onClick={handleClick}>LOGIN WITH SPOTIFY</button>
     </Container>

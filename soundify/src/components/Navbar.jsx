@@ -40,7 +40,7 @@ function Navbar({ $navBackground }) {
 
 const Container = styled.div`
   --background-default: none;
-  --background-active: rgba(0, 0, 0, 0.7);
+  --background-active: rgba(0, 0, 0, 0.9);
   --color-icon-default: #c7c5c5;
   --color-icon-hover: white;
 
@@ -48,13 +48,13 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 2rem;
-  height: 15vh;
+  height: 4vh;
   position: sticky;
   top: 0;
   transition: 0.3s ease-in-out;
   background-color: ${({ $navBackground }) =>
     $navBackground ? "var(--background-active)" : "var(--background-default)"};
-
+    filter: ${({ $navBackground }) => ($navBackground ? "blur(3px)" : "none")};
   .search__bar {
     background-color: white;
     width: 30%;
