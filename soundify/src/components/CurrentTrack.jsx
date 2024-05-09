@@ -99,12 +99,13 @@ const Container = styled.div`
       gap: 0.3rem;
       overflow: hidden;
       &__track__name {
-        margin-bottom: 0; /* MAJ */
+        margin: 0.3rem; /* MAJ */
         color: white;
+        font-size: calc(10px + 0.5vmin);
       }
       &__track__artists {
         color: #b3b3b3;
-        margin-top: 0.3rem;
+        margin-top: 0.1rem;
       }
     }
   }
