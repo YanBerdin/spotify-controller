@@ -52,7 +52,8 @@ function Soundify() {
         if (error.response && error.response.status === 401) {
           console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
           // Rediriger vers la page de connexion
-          window.location.href = "http://localhost:5173";
+          // window.location.href = "http://localhost:5173"; //? Boucle infinie
+          return;
         } else {
           console.error("Error fetching user info:", error);
         }
