@@ -106,10 +106,17 @@ function Body() {
         dispatch({ type: reducerCases.SET_PLAYER_STATE, playerState: true });
       }
     } catch (error) {
-      console.error(error);
+      console.error(error); //TODO Remove this line
+
+      // https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
       if (error.response && error.response.status === 404) {
         console.error(
           "Cette fonctionnalité nécessite un lecteur Spotify déjà ouvert sur un autre appareil.",
+          error
+        );
+      } else if (error.response && error.response.status === 403) {
+        console.error(
+          "Cette fonctionnalité nécessite un compte Spotify Premium.",
           error
         );
       } else {

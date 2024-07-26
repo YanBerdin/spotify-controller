@@ -26,7 +26,6 @@ function PlayerControls() {
       console.log("Appel => playOrPause");
       const state = playerState ? "pause" : "play";
       const playOrPauseResponse = await axios.put(
-        // https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
         // https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
         `https://api.spotify.com/v1/me/player/${state}`,
         {},
@@ -37,8 +36,6 @@ function PlayerControls() {
           },
         }
       );
-
-      // console.log("playOrPauseResponse", playOrPauseResponse); //TODO Remove this line
 
       // OK => empty playOrPauseResponse
       if (playOrPauseResponse.status === 204) {
@@ -52,19 +49,18 @@ function PlayerControls() {
         ); //TODO Remove this line
       }
     } catch (error) {
-      if (
-        error.playOrPauseResponse &&
-        error.playOrPauseResponse.status === 403
-      ) {
-        // Gérer l'erreur 403 ici
-        console.error(
-          "Cette fonctionnalité nécessite un compte Spotify Premium. Reste sur PAUSE",
-          error
-        );
-        console.error(
-          "Cette fonctionnalité nécessite un compte Spotify Premium. Reste sur PAUSE",
-          error
-        );
+      //console.log("playOrPauseResponse", error.playOrPauseResponse); //TODO Remove this line
+      console.log("response", error.response, error.response.status); //TODO Remove this line
+      if (error.response && error.response.status === 403) {
+        if (
+          error instanceof axios.AxiosError &&
+          error.code === "ERR_BAD_REQUEST"
+        ) {
+          console.error(
+            "Cette fonctionnalité PLAY/PAUSE nécessite un compte Spotify Premium.",
+            error
+          );
+        }
       } else {
         // Gérer d'autres types d'erreurs ici
         console.error(
@@ -119,7 +115,17 @@ function PlayerControls() {
     } catch (error) {
       if (error.response && error.response.status === 403) {
         // Gérer l'erreur 403 ici
-        console.error("Erreur d'authentification.", error);
+        if (
+          error instanceof axios.AxiosError &&
+          error.code === "ERR_BAD_REQUEST"
+        ) {
+          console.error(
+            "Cette fonctionnalité nécessite un compte Spotify Premium.",
+            error
+          );
+        } else {
+          console.error("Erreur d'authentification.", error);
+        }
       } else if (error.response && error.response.status === 401) {
         console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
         // Rediriger vers la page de connexion

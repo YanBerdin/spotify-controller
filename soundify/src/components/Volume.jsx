@@ -23,7 +23,20 @@ export default function Volume() {
         }
       );
     } catch (error) {
-      console.error("Le réglage du volume ne répond pas:", error);
+      if (error.response && error.response.status === 403) {
+        if (
+          error instanceof axios.AxiosError &&
+          error.code === "ERR_BAD_REQUEST"
+        ) {
+          console.error(
+            "Cette fonctionnalité PLAY/PAUSE nécessite un compte Spotify Premium.",
+            error
+          );
+        }
+      } else {
+        // Gérer d'autres types d'erreurs ici
+        console.error("Le réglage du volume ne répond pas:", error);
+      }
     }
   };
 
@@ -43,7 +56,7 @@ const Container = styled.div`
   display: flex;
   justify-content: flex-end;
   align-content: center;
-   gap: 1rem;
+  gap: 1rem;
   input {
     width: 9rem;
     height: 0.3rem;

@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Body from "./Body";
 import Footer from "./Footer";
+import Login from "./Login";
 
 function Soundify() {
   const [{ token }, dispatch] = useProvider();
@@ -116,7 +117,9 @@ function Soundify() {
     console.log("Appel => getPlaybackState()"); //TODO Remove this line
   }, [dispatch, token]);
 
-  return (
+  return !token ? (
+    <Login />
+  ) : (
     <Container>
       <div className="spotify__body">
         <Sidebar />
