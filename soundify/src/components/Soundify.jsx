@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 import Body from "./Body";
 import Footer from "./Footer";
 // import Login from "./Login";
+import Notification from './Notification';
 
 function Soundify() {
   const [{ token }, dispatch] = useProvider();
@@ -135,6 +136,7 @@ function Soundify() {
         </div>
       </div>
       <div className="spotify__footer">
+      <Notification />
         <Footer />
       </div>
     </Container>
