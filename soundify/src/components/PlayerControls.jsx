@@ -129,7 +129,7 @@ function PlayerControls() {
       } else if (error.response && error.response.status === 401) {
         console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
         // Rediriger vers la page de connexion
-        window.location.href = "http://localhost:5173";
+        // window.location.href = "http://localhost:5173"; //? Boucle infinie
       } else {
         console.error(
           "Une erreur s'est produite lors de la récupération de la file d'attente.",
@@ -206,7 +206,7 @@ function PlayerControls() {
       } else if (error.response && error.response.status === 401) {
         console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
         // Rediriger vers la page de connexion
-        window.location.href = "http://localhost:5173";
+        // window.location.href = "http://localhost:5173";
       } else {
         console.error(
           "Une erreur s'est produite lors de la récupération de la Tracklist jouée précédemment.",

@@ -53,7 +53,7 @@ function Soundify() {
           console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
           // Rediriger vers la page de connexion
           // window.location.href = "http://localhost:5173"; //? Boucle infinie
-          return;
+          // return;
         } else {
           console.error("Error fetching user info:", error);
         }
@@ -108,6 +108,10 @@ function Soundify() {
             error
           );
           // window.location.href = "http://localhost:5173"; //? Boucle infinie
+          // console.log(
+          //  "Token expiré. Réinitialisation ou suppression du token."
+          //);
+          //dispatch({ type: reducerCases.SET_TOKEN, token: null }); //? Boucle infinie
         } else {
           console.error("Error fetching playback state:", error);
           // window.location.href = "http://localhost:5173"; //? Boucle infinie
