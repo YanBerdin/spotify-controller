@@ -25,35 +25,40 @@ function Body() {
             },
           }
         );
-        // console.log(response.data); //TODO Remove this line
-        const selectedPlaylist = {
-          id: response.data.id,
-          name: response.data.name,
-          description: response.data.description.startsWith("<a")
-            ? ""
-            : response.data.description,
-          image: response.data.images[0].url,
-          tracks: response.data.tracks.items.map(({ track }) => ({
-            id: track.id,
-            name: track.name,
-            artists: track.artists.map((artist) => artist.name),
-            image: track.album.images[2].url,
-            duration: track.duration_ms,
-            album: track.album.name,
-            context_uri: track.album.uri,
-            track_number: track.track_number,
-          })),
-        };
-        // console.log(response.data); //TODO Remove this line
-        dispatch({ type: reducerCases.SET_PLAYLIST, selectedPlaylist });
-        console.log("dispatch SET_PLAYLIST selectedPlaylist"); //TODO Remove this line
+        console.log(response.data); //TODO Remove this line
+        if (response.data.tracks && response.data.tracks.items.length > 0) {
+          const selectedPlaylist = {
+            id: response.data.id,
+            name: response.data.name,
+            description: response.data.description.startsWith("<a")
+              ? ""
+              : response.data.description,
+            image: response.data.images[0].url,
+            tracks: response.data.tracks.items.map(({ track }) => ({
+              id: track.id,
+              name: track.name,
+              artists: track.artists.map((artist) => artist.name),
+              image: track.album.images[2].url,
+              duration: track.duration_ms,
+              album: track.album.name,
+              context_uri: track.album.uri,
+              track_number: track.track_number,
+            })),
+          };
+          // console.log(response.data); //TODO Remove this line
+          dispatch({ type: reducerCases.SET_PLAYLIST, selectedPlaylist });
+          console.log("dispatch SET_PLAYLIST selectedPlaylist"); //TODO Remove this line
+        } else {
+          console.error("La liste de pistes est vide ou non définie.");
+        }
       } catch (error) {
         if (error.response && error.response.status === 401) {
           console.error(
             "Token expiré. Cliquer sur Logout ou fermer l'onglet.",
             error
           );
-          // window.location.href = "http://localhost:5173";
+          // window.location.href = "http://localhost:5173"; //? Boucle infinie
+          // return // TODO A Verifier si mieux d'ajouter return
         } else {
           console.error("Erreur de récupération des playlists", error);
         }
