@@ -7,7 +7,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Body from "./Body";
 import Footer from "./Footer";
-import Login from "./Login";
+// import Login from "./Login";
 
 function Soundify() {
   const [{ token }, dispatch] = useProvider();
@@ -122,9 +122,7 @@ function Soundify() {
     console.log("Appel => getPlaybackState()"); //TODO Remove this line
   }, [dispatch, token]);
 
-  return !token ? (
-    <Login />
-  ) : (
+  return (
     <Container>
       <div className="spotify__body">
         <Sidebar />
@@ -142,6 +140,7 @@ function Soundify() {
     </Container>
   );
 }
+
 const Container = styled.div`
   --color-background: rgb(32, 87, 100);
   --color-scrollbar-thumb: rgb(255, 255, 255, 0.6);
