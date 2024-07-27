@@ -1,9 +1,13 @@
 import axios from "axios";
 import styled from "styled-components";
+import { useNotification } from "../utils/NotificationContext";
 import { useProvider } from "../utils/Provider";
+import Notification from "./Notification";
 
 export default function Volume() {
   const [{ token }] = useProvider();
+
+  const { showErrorToast } = useNotification();
 
   const handleVolumeChange = async (event) => {
     const volume = parseInt(event.target.value);
@@ -23,32 +27,49 @@ export default function Volume() {
         }
       );
     } catch (error) {
-      if (error.response && error.response.status === 403) {
-        if (
-          error instanceof axios.AxiosError &&
-          error.code === "ERR_BAD_REQUEST"
-        ) {
+      let errorMessage = "errorMessage : Le réglage du volume ne répond pas.";
+      console.log(error.response); //TODO Remove this line
+      if (error.response) {
+        if (error.response.status === 403) {
+          if (
+            error instanceof axios.AxiosError &&
+            error.code === "ERR_BAD_REQUEST"
+          ) {
+            errorMessage =
+              "Cette fonctionnalité Volume nécessite un compte Spotify Premium.";
+          }
           console.error(
-            "Cette fonctionnalité PLAY/PAUSE nécessite un compte Spotify Premium.",
+            "error.response.status === 403 => Cette fonctionnalité Volume nécessite un compte Spotify Premium.",
             error
+          );
+          showErrorToast(
+            new Error(
+              "Le réglage de Volume nécessite un compte Spotify Premium."
+            )
           );
         }
       } else {
         // Gérer d'autres types d'erreurs ici
-        console.error("Le réglage du volume ne répond pas:", error);
+        console.error(errorMessage, error);
+        showErrorToast(new Error(errorMessage));
       }
     }
   };
 
   return (
-    <Container>
-      <input
-        type="range"
-        onMouseUp={(event) => handleVolumeChange(event)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      />
-    </Container>
+    <>
+      <Container>
+        <div>
+          <input
+            type="range"
+            onMouseUp={(event) => handleVolumeChange(event)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          />
+        </div>
+      </Container>
+      <Notification />
+    </>
   );
 }
 

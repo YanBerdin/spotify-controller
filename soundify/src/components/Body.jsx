@@ -1,15 +1,19 @@
 import axios from "axios";
 import { useEffect } from "react";
 import styled from "styled-components";
+import { useNotification } from "../utils/NotificationContext";
 import { useProvider } from "../utils/Provider";
 import { AiFillClockCircle } from "react-icons/ai";
 import { reducerCases } from "../utils/Constants";
+import Notification from "./Notification";
 
 function Body() {
   const [{ token, selectedPlaylistId, selectedPlaylist }, dispatch] =
     useProvider();
 
   console.log("Rendering => Body"); //TODO Remove this line
+
+  const { showErrorToast } = useNotification();
 
   useEffect(() => {
     console.log("useEffect => getInitialPlaylist"); //TODO Remove this line
@@ -50,6 +54,9 @@ function Body() {
           console.log("dispatch SET_PLAYLIST selectedPlaylist"); //TODO Remove this line
         } else {
           console.error("La liste de pistes est vide ou non définie.");
+          showErrorToast(
+            new Error("La liste de pistes est vide ou non définie.")
+          );
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
@@ -57,16 +64,23 @@ function Body() {
             "Token expiré. Cliquer sur Logout ou fermer l'onglet.",
             error
           );
+          showErrorToast(
+            new Error("Token expiré. Cliquer sur Logout ou fermer l'onglet.")
+          );
+
           // window.location.href = "http://localhost:5173"; //? Boucle infinie
           // return // TODO A Verifier si mieux d'ajouter return
         } else {
           console.error("Erreur de récupération des playlists", error);
+          showErrorToast(
+            new Error("Erreur de récupération des playlists: " + error.message)
+          );
         }
       }
     };
     getInitialPlaylist();
     console.log("getInitialPlaylist (Body.jsx)"); //TODO Remove this line
-  }, [token, dispatch, selectedPlaylistId]);
+  }, [token, dispatch, selectedPlaylistId, showErrorToast]);
 
   // console.log(selectedPlaylistId); //TODO Remove this line
   // console.log(selectedPlaylist.name);
@@ -228,6 +242,7 @@ function Body() {
           </div>
         </>
       )}
+      <Notification />
     </Container>
   );
 }

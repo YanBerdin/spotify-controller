@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useProvider } from "../utils/Provider";
+import { useNotification } from "../utils/NotificationContext";
 import styled from "styled-components";
 import { reducerCases } from "../utils/Constants";
 import axios from "axios";
@@ -8,7 +9,7 @@ import Sidebar from "./Sidebar";
 import Body from "./Body";
 import Footer from "./Footer";
 // import Login from "./Login";
-import Notification from './Notification';
+import Notification from "./Notification";
 
 function Soundify() {
   const [{ token }, dispatch] = useProvider();
@@ -17,6 +18,8 @@ function Soundify() {
   // const [{selectedPlaylist}] = useProvider(); //TODO Remove this line
   // console.log(selectedPlaylist); //TODO Remove this line
   console.log("Rendering => Soundify"); //TODO Remove this line
+
+  const { showErrorToast } = useNotification();
 
   const [$navBackground, setNavBackground] = useState(false);
   const [headerBackground, setHeaderBackground] = useState(false);
@@ -55,14 +58,20 @@ function Soundify() {
           // Rediriger vers la page de connexion
           // window.location.href = "http://localhost:5173"; //? Boucle infinie
           // return;
+          showErrorToast(
+            new Error("Token expiré. Cliquer sur Logout ou fermer l'onglet.")
+          );
         } else {
           console.error("Error fetching user info:", error);
+          showErrorToast(
+            new Error("Error fetching user info: " + error.message)
+          );
         }
       }
     };
     getUserInfo();
     console.log("Appel => getUserInfo()"); //TODO Remove this line
-  }, [dispatch, token]);
+  }, [dispatch, token, showErrorToast]);
 
   // Récupération de l'état de lecture actuel
   useEffect(() => {
@@ -113,15 +122,21 @@ function Soundify() {
           //  "Token expiré. Réinitialisation ou suppression du token."
           //);
           //dispatch({ type: reducerCases.SET_TOKEN, token: null }); //? Boucle infinie
+          showErrorToast(
+            new Error("Token expiré. Cliquer sur Logout ou fermer l'onglet.")
+          );
         } else {
           console.error("Error fetching playback state:", error);
           // window.location.href = "http://localhost:5173"; //? Boucle infinie
+          showErrorToast(
+            new Error("Error fetching playback state: " + error.message)
+          );
         }
       }
     };
     getPlaybackState();
     console.log("Appel => getPlaybackState()"); //TODO Remove this line
-  }, [dispatch, token]);
+  }, [dispatch, token, showErrorToast]);
 
   return (
     <Container>
@@ -136,7 +151,7 @@ function Soundify() {
         </div>
       </div>
       <div className="spotify__footer">
-      <Notification />
+        <Notification />
         <Footer />
       </div>
     </Container>

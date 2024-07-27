@@ -8,6 +8,8 @@ import {
 import { CgPlayTrackNext, CgPlayTrackPrev } from "react-icons/cg";
 import { FiRepeat } from "react-icons/fi";
 import { useProvider } from "../utils/Provider";
+import { useNotification } from "../utils/NotificationContext";
+import Notification from "./Notification";
 import axios from "axios";
 import { reducerCases } from "../utils/Constants";
 
@@ -19,6 +21,8 @@ function PlayerControls() {
   console.log("Rendering => PlayerControls"); //TODO Remove this line
   // console.log("playerState", playerState); //TODO Remove this line
   // console.log("queueList", queueList); //TODO Remove this line
+
+  const { showErrorToast } = useNotification();
 
   // Changer l'état du lecteur (pause / lecture)
   const playOrPause = async () => {
@@ -60,12 +64,22 @@ function PlayerControls() {
             "Cette fonctionnalité PLAY/PAUSE nécessite un compte Spotify Premium.",
             error
           );
+          showErrorToast(
+            new Error(
+              "Cette fonctionnalité PLAY/PAUSE nécessite un compte Spotify Premium."
+            )
+          );
         }
       } else {
         // Gérer d'autres types d'erreurs ici
         console.error(
           "Une erreur s'est produite lors de la modification Play/Pause de l'état du lecteur.",
           error
+        );
+        showErrorToast(
+          new Error(
+            "Une erreur s'est produite lors de la modification Play/Pause."
+          )
         );
       }
     }
@@ -120,20 +134,36 @@ function PlayerControls() {
           error.code === "ERR_BAD_REQUEST"
         ) {
           console.error(
-            "Cette fonctionnalité nécessite un compte Spotify Premium.",
+            "<< Récupération de la file d'attente >> nécessite un compte Spotify Premium.",
             error
+          );
+          showErrorToast(
+            new Error(
+              "<< Récupération de la file d'attente >> nécessite un compte Spotify Premium."
+            )
           );
         } else {
           console.error("Erreur d'authentification.", error);
+          showErrorToast(
+            new Error("Erreur d'authentification. Veuillez vous reconnecter.")
+          );
         }
       } else if (error.response && error.response.status === 401) {
         console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
         // Rediriger vers la page de connexion
         // window.location.href = "http://localhost:5173"; //? Boucle infinie
+        showErrorToast(
+          new Error("Token expiré. Cliquer sur Logout ou fermer l'onglet.")
+        );
       } else {
         console.error(
           "Une erreur s'est produite lors de la récupération de la file d'attente.",
           error
+        );
+        showErrorToast(
+          new Error(
+            "Une erreur s'est produite lors de la récupération de la file d'attente."
+          )
         );
       }
     }
@@ -203,14 +233,25 @@ function PlayerControls() {
       if (error.response && error.response.status === 403) {
         // Gérer l'erreur 403 ici
         console.error("Erreur d'authentification.", error);
+        showErrorToast(
+          new Error("Erreur d'authentification. Veuillez vous reconnecter.")
+        );
       } else if (error.response && error.response.status === 401) {
         console.error("Token expiré. Cliquer sur Logout ou fermer l'onglet.");
         // Rediriger vers la page de connexion
         // window.location.href = "http://localhost:5173";
+        showErrorToast(
+          new Error("Token expiré. Cliquer sur Logout ou fermer l'onglet.")
+        );
       } else {
         console.error(
           "Une erreur s'est produite lors de la récupération de la Tracklist jouée précédemment.",
           error
+        );
+        showErrorToast(
+          new Error(
+            "Une erreur s'est produite lors de la récupération de la Tracklist jouée précédemment."
+          )
         );
       }
       return {}; // Retourner un objet vide ou une structure par défaut
@@ -350,13 +391,21 @@ function PlayerControls() {
       if (error.response && error.response.status === 403) {
         // Gérer l'erreur 403 ici
         console.error(
-          "Cette fonctionnalité nécessite un compte Spotify Premium.",
+          "le changement de piste nécessite un compte Spotify Premium.",
           error
+        );
+        showErrorToast(
+          new Error(
+            "Le changement de piste nécessite un compte Spotify Premium."
+          )
         );
       } else {
         console.error(
           "Une erreur s'est produite lors du changement de piste.",
           error
+        );
+        showErrorToast(
+          new Error("Une erreur s'est produite lors du changement de piste.")
         );
         dispatch({ type: reducerCases.SET_PLAYING, currentPlaying: null });
       }
@@ -390,12 +439,14 @@ function PlayerControls() {
           <BsFillPlayCircleFill onClick={playOrPause} />
         )}
       </div>
+
       <div className="next">
         <CgPlayTrackNext onClick={handleNextTrack} />
       </div>
       <div className="repeat">
         <FiRepeat />
       </div>
+      <Notification />
     </Container>
   );
 }

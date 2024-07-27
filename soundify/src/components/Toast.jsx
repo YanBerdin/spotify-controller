@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import PropTypes from 'prop-types'; // Import prop-types library
-import '../Toast.css';
+import { useEffect } from "react";
+import PropTypes from "prop-types"; // Import prop-types library
+import "../Toast.css";
 
 const Toast = ({ type, icon, title, text, removeToast }) => {
   useEffect(() => {
