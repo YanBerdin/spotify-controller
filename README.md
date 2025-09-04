@@ -1,11 +1,15 @@
 # `Soundify, a Spotify Controller`
 
-> [!WARNING] 🚧 Under construction 🚧
+> [!WARNING]
+> `🚧 Under construction 🚧`
+>
 > This project is currently under construction and may not be fully functional.
+>
+> - Minimal setup to get React working in Vite
+> - Discovery and Learning of styled-components
 
-- Minimal setup to get React working in Vite
-- Discovery and Learning of styled-components
-- Warning: The use of all Spotify features requires a Premium account
+> [!CAUTION]
+>> The use of all Spotify features requires a Premium account
 
 ## 1. Analyse de l’architecture
 
